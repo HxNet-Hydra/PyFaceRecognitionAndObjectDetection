@@ -25,8 +25,8 @@ from collections import Counter
 MODEL_NAME = 'inference_graph'
 
 # Grab path to current working directory
-CWD_PATH_MODEL = 'C:/Vendron/External_Vision/model/'
-CWD_PATH = 'C:/Vendron/External_Vision/object_detection/'
+CWD_PATH_MODEL = 'model/'
+CWD_PATH = 'object_detection/'
 
 # Path to frozen detection graph .pb file, which contains the model that is used
 # for object detection.
@@ -35,7 +35,7 @@ PATH_TO_CKPT = os.path.join(CWD_PATH_MODEL,MODEL_NAME,'frozen_inference_graph.pb
 # Path to label map file
 PATH_TO_LABELS = os.path.join(CWD_PATH_MODEL,'training','labelmap.pbtxt')
 
-PATH_TO_DATABASE = "C:/Vendron/vision_product.db"
+PATH_TO_DATABASE = "product.db"
 
 # Number of classes the object detector can identify
 NUM_CLASSES = 90
@@ -84,7 +84,7 @@ def readSingleRow():
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
-        sqlite_select_query = """SELECT ID FROM VISION_CURRENT_PRODUCT ORDER BY id DESC LIMIT 1"""
+        sqlite_select_query = """SELECT ID FROM CURRENT_PRODUCT ORDER BY id DESC LIMIT 1"""
         cursor.execute(sqlite_select_query)
         record = cursor.fetchone()
         print (record)
@@ -101,7 +101,7 @@ def readSingleRow():
 def createRecordsIfNotExist():
     try:
         sqliteConnection = sqlite3.connect(PATH_TO_DATABASE)
-        sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS VISION_CURRENT_PRODUCT (
+        sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS CURRENT_PRODUCT (
 	    "ID"	INTEGER,
 	    "Unique_ID"	vachar(127),
 	    "CREATED"	DATETIME DEFAULT CURRENT_TIME,
@@ -133,13 +133,13 @@ def insertMultipleRecords(recordList):
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
-        sqlite_insert_query = """INSERT INTO VISION_CURRENT_PRODUCT
+        sqlite_insert_query = """INSERT INTO CURRENT_PRODUCT
                           (Unique_ID,CREATED,UPDATED,QUANTITY,LEVEL) 
                           VALUES (?, ?, ?, ?, ?);"""
 
         cursor.executemany(sqlite_insert_query, recordList)
         sqliteConnection.commit()
-        print("Total", cursor.rowcount, "Records inserted successfully into VISION_CURRENT_PRODUCT table")
+        print("Total", cursor.rowcount, "Records inserted successfully into CURRENT_PRODUCT table")
         sqliteConnection.commit()
         cursor.close()
 
@@ -156,7 +156,7 @@ def updateMultipleColumns(Unique_ID, UPDATED, QUANTITY, LEVEL):
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
-        sqlite_update_query = """UPDATE VISION_CURRENT_PRODUCT SET UPDATED = ?, QUANTITY = ? WHERE Unique_ID = ? AND LEVEL = ?;"""
+        sqlite_update_query = """UPDATE CURRENT_PRODUCT SET UPDATED = ?, QUANTITY = ? WHERE Unique_ID = ? AND LEVEL = ?;"""
         columnValues = ( UPDATED, QUANTITY, Unique_ID, LEVEL)
         cursor.execute(sqlite_update_query, columnValues)
         sqliteConnection.commit()
@@ -177,7 +177,7 @@ def updateMultipleColumnsNotExist(ID, QUANTITY, UPDATED):
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
-        sqlite_update_query = """Update VISION_CURRENT_PRODUCT set QUANTITY = ?, UPDATED = ? where  ID = ?"""
+        sqlite_update_query = """Update CURRENT_PRODUCT set QUANTITY = ?, UPDATED = ? where  ID = ?"""
         columnValues = (QUANTITY, UPDATED, ID)
         cursor.execute(sqlite_update_query, columnValues)
         sqliteConnection.commit()
@@ -199,7 +199,7 @@ def readRecords(LEVEL):
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
-        sqlite_select_query = """SELECT * from VISION_CURRENT_PRODUCT where LEVEL = ?"""
+        sqlite_select_query = """SELECT * from CURRENT_PRODUCT where LEVEL = ?"""
         cursor.execute(sqlite_select_query, (LEVEL, ))
         print("Reading single row \n")
         record = cursor.fetchall()

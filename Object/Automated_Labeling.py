@@ -26,7 +26,7 @@ from utils import visualization_utils as vis_util
 MODEL_NAME = 'inference_graph'
 
 # Grab path to current working directory
-CWD_PATH = 'C:/Vendron/Vendron_AI_Vision/model'
+CWD_PATH = 'model'
 
 # Path to frozen detection graph .pb file, which contains the model that is used
 # for object detection.
@@ -57,7 +57,7 @@ def regkey_value(path, name="", start_key = None):
                 i += 1
             return desc[1]
 try:
-    path_images = regkey_value(r"HKEY_CURRENT_USER\Software\Silkron\Vendron\Image_path", "path")
+    path_images = regkey_value(r"HKEY_CURRENT_USER\Software\Image_path", "path")
 except:
     pass
 
